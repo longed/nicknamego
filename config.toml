@@ -1,0 +1,17 @@
+[UserOptions]
+# 是否要数字
+wantedNumber       = true
+# 是否要大写字母
+wantedUpperCase    = true
+# 是否要小写字母
+wantedLowerCase    = true
+# 是否要符号
+wantedSymbol       = true
+# 是否保存到文件
+saveNickNameToFile = true
+# nickname 长度
+nickNameLen = 8
+# 批量产生 nickname 数
+batchNumber = 1
+# 指定随机字符集
+specifiedChars = ""

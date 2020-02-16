@@ -1,12 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/BurntSushi/toml"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
-	"math/rand"
+	"strings"
 )
 
 type CharacterSet struct {
@@ -18,6 +19,10 @@ type CharacterSet struct {
 	OperateCharsSet    []string
 }
 
+type Config struct {
+	 User UserOptions `toml:"UserOptions"`
+}
+
 type UserOptions struct {
 	WantedNumber       bool   `toml:"wantedNumber"`
 	WantedUpperCase    bool   `toml:"wantedUpperCase"`
@@ -27,7 +32,7 @@ type UserOptions struct {
 	NickNameLen        int    `toml:"nickNameLen"`
 	BatchNumber        int    `toml:"batchNumber"`
 	SpecifiedChars     string `toml:"specifiedChars"`
-}
+} 
 
 var (
 	characterSet CharacterSet
@@ -36,7 +41,7 @@ var (
 
 const (
 	ResultFileSizeUpperLimit int64 = 30 * 1024 * 1024
-	ResultFileName                 = "nickname.pw.txt"
+	ResultFileName                 = "nickname.txt"
 	ConfigFileName                 = "config.toml"
 )
 
@@ -46,18 +51,9 @@ func init() {
 }
 
 func main() {
-
-	/* read flag param
-	init characterSet
-	process */
-
-	out, err := json.Marshal(characterSet)
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(string(out))
 	fmt.Println("hello nicknamego.")
+	
+	nickname(userOptions)
 }
 
 // set defalut value to characterSet
@@ -75,11 +71,16 @@ func initCharacterSet() {
 
 // set default value to userOptions
 func initUserOptions() {
-	userOptions.WantedNumber = true
-	userOptions.WantedUpperCase = true
-	userOptions.WantedLowerCase = true
-	userOptions.WantedSymbol = true
-	userOptions.SaveNickNameToFile = false
+	// userOptions.WantedNumber = true
+	// userOptions.WantedUpperCase = true
+	// userOptions.WantedLowerCase = true
+	// userOptions.WantedSymbol = true
+	// userOptions.SaveNickNameToFile = false
+	var config Config
+	if _, err := toml.DecodeFile("./"+ConfigFileName, &config); err != nil {
+		panic("read config error. exit.")
+	}
+	userOptions = config.User
 }
 
 // generate nickname
@@ -90,13 +91,25 @@ func nickname(userOptions UserOptions) {
 		composeOperateCharsSet(userOptions)
 	}
 
+	timeStr := time.Now().Format("2006-01-02 15:04:05")
+	content := []string{timeStr}
+	content = append(content, plainRandom(userOptions)...)
+	result := format(content)
 	if userOptions.SaveNickNameToFile {
-
+		saveContent(result)
+	} else {
+		fmt.Println(result)
 	}
 }
 
-func randomChars(userOptions UserOptions) {
-
+func format(content []string) string {
+	line := ""
+	for _, item := range content {
+		line = line + " " + item
+	}
+	line = line + "\n"
+	line = strings.TrimSpace(line)
+	return line
 }
 
 // plain random algorithm
@@ -106,8 +119,7 @@ func plainRandom(userOptions UserOptions) []string {
 	for batchNumber := 0; batchNumber < userOptions.BatchNumber; batchNumber++ {
 		nn := ""
 		for i := 0; i < userOptions.NickNameLen; i++ {
-			nn = nn + characterSet.OperateCharsSet[
-				rand.Intn(len(characterSet.OperateCharsSet))]
+			nn = nn + characterSet.OperateCharsSet[rand.Intn(len(characterSet.OperateCharsSet))]
 		}
 		nnList = append(nnList, nn)
 	}

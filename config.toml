@@ -8,7 +8,7 @@ wantedLowerCase    = true
 # 是否要符号
 wantedSymbol       = true
 # 是否保存到文件
-saveNickNameToFile = false
+saveNickNameToFile = true
 # nickname 长度
 nickNameLen = 8
 # 批量产生 nickname 数

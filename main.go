@@ -51,9 +51,12 @@ func init() {
 }
 
 func main() {
-	fmt.Println("hello nicknamego.")
-	
+	welcome()	
 	nickname(userOptions)
+}
+
+func welcome() {
+	fmt.Println("*** Welcome to nickname ! ***")
 }
 
 // set defalut value to characterSet
@@ -97,9 +100,8 @@ func nickname(userOptions UserOptions) {
 	result := format(content)
 	if userOptions.SaveNickNameToFile {
 		saveContent(result)
-	} else {
-		fmt.Println(result)
 	}
+	fmt.Println(result)
 }
 
 func format(content []string) string {
@@ -107,8 +109,8 @@ func format(content []string) string {
 	for _, item := range content {
 		line = line + " " + item
 	}
-	line = line + "\n"
 	line = strings.TrimSpace(line)
+	line = line + "\n"
 	return line
 }
 

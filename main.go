@@ -24,15 +24,15 @@ type Config struct {
 }
 
 type UserOptions struct {
-	WantedNumber       bool   `toml:"wantedNumber"`
-	WantedUpperCase    bool   `toml:"wantedUpperCase"`
-	WantedLowerCase    bool   `toml:"wantedLowerCase"`
-	WantedSymbol       bool   `toml:"wantedSymbol"`
+	WantNumber         bool   `toml:"wantNumber"`
+	WantUpperCase      bool   `toml:"wantUpperCase"`
+	WantLowerCase      bool   `toml:"wantLowerCase"`
+	WantSymbol         bool   `toml:"wantSymbol"`
 	SaveNickNameToFile bool   `toml:"saveNickNameToFile"`
 	NickNameLen        int    `toml:"nickNameLen"`
 	BatchNumber        int    `toml:"batchNumber"`
 	SpecifiedChars     string `toml:"specifiedChars"`
-} 
+}
 
 var (
 	characterSet CharacterSet
@@ -72,7 +72,7 @@ func initCharacterSet() {
 		")", "-", "=", "+", "."}
 }
 
-// set default value to userOptions
+// init userOptions
 func initUserOptions() {
 	// userOptions.WantedNumber = true
 	// userOptions.WantedUpperCase = true
@@ -89,7 +89,9 @@ func initUserOptions() {
 // generate nickname
 func nickname(userOptions UserOptions) {
 	if len(userOptions.SpecifiedChars) > 0 {
-		// move specified chars to characterSet
+		for _, i := range userOptions.SpecifiedChars {
+			characterSet.OperateCharsSet=append(characterSet.OperateCharsSet, string(i))
+		}
 	} else {
 		composeOperateCharsSet(userOptions)
 	}
@@ -167,22 +169,22 @@ func writeToFile(path, content string) (bool, error) {
 }
 
 func composeOperateCharsSet(userOptions UserOptions) {
-	if userOptions.WantedNumber {
+	if userOptions.WantNumber {
 		characterSet.OperateCharsSet = append(characterSet.OperateCharsSet,
 			characterSet.Numbers...)
 	}
 
-	if userOptions.WantedUpperCase {
+	if userOptions.WantUpperCase {
 		characterSet.OperateCharsSet = append(characterSet.OperateCharsSet,
 			characterSet.UpperCaseChars...)
 	}
 
-	if userOptions.WantedLowerCase {
+	if userOptions.WantLowerCase {
 		characterSet.OperateCharsSet = append(characterSet.OperateCharsSet,
 			characterSet.LowerCaseChars...)
 	}
 
-	if userOptions.WantedSymbol {
+	if userOptions.WantSymbol {
 		characterSet.OperateCharsSet = append(characterSet.OperateCharsSet,
 			characterSet.Symbols...)
 	}

@@ -1,12 +1,12 @@
 [UserOptions]
 # 是否要数字
-wantedNumber       = true
+wantNumber       = true
 # 是否要大写字母
-wantedUpperCase    = true
+wantUpperCase    = true
 # 是否要小写字母
-wantedLowerCase    = true
+wantLowerCase    = true
 # 是否要符号
-wantedSymbol       = true
+wantSymbol       = true
 # 是否保存到文件
 saveNickNameToFile = true
 # nickname 长度

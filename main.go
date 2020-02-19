@@ -119,7 +119,9 @@ func plainRandom(userOptions UserOptions) []string {
 	for batchNumber := 0; batchNumber < userOptions.BatchNumber; batchNumber++ {
 		nn := ""
 		for i := 0; i < userOptions.NickNameLen; i++ {
-			nn = nn + characterSet.OperateCharsSet[rand.Intn(len(characterSet.OperateCharsSet))]
+			if slen := len(characterSet.OperateCharsSet); slen > 0 {
+				nn = nn + characterSet.OperateCharsSet[rand.Intn(slen)]
+			}
 		}
 		nnList = append(nnList, nn)
 	}

@@ -6,8 +6,8 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
-	"time"
 	"strings"
+	"time"
 )
 
 type CharacterSet struct {
@@ -20,7 +20,7 @@ type CharacterSet struct {
 }
 
 type Config struct {
-	 User UserOptions `toml:"UserOptions"`
+	User UserOptions `toml:"UserOptions"`
 }
 
 type UserOptions struct {
@@ -51,10 +51,11 @@ func init() {
 }
 
 func main() {
-	welcome()	
+	welcome()
 	nickname(userOptions)
 }
 
+// print welcome message
 func welcome() {
 	fmt.Println("*** Welcome to nickname ! ***")
 }
@@ -88,13 +89,7 @@ func initUserOptions() {
 
 // generate nickname
 func nickname(userOptions UserOptions) {
-	if len(userOptions.SpecifiedChars) > 0 {
-		for _, i := range userOptions.SpecifiedChars {
-			characterSet.OperateCharsSet=append(characterSet.OperateCharsSet, string(i))
-		}
-	} else {
-		composeOperateCharsSet(userOptions)
-	}
+	composeOperateCharsSet(userOptions)
 
 	timeStr := time.Now().Format("2006-01-02 15:04:05")
 	content := []string{timeStr}
@@ -106,6 +101,7 @@ func nickname(userOptions UserOptions) {
 	fmt.Println(result)
 }
 
+// format content
 func format(content []string) string {
 	line := ""
 	for _, item := range content {
@@ -168,7 +164,15 @@ func writeToFile(path, content string) (bool, error) {
 	return true, nil
 }
 
+// compose operate character set by userOptions
 func composeOperateCharsSet(userOptions UserOptions) {
+	if len(userOptions.SpecifiedChars) > 0 {
+		for _, i := range userOptions.SpecifiedChars {
+			characterSet.OperateCharsSet = append(characterSet.OperateCharsSet, string(i))
+		}
+		return
+	}
+
 	if userOptions.WantNumber {
 		characterSet.OperateCharsSet = append(characterSet.OperateCharsSet,
 			characterSet.Numbers...)

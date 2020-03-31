@@ -20,7 +20,12 @@ type CharacterSet struct {
 }
 
 type Config struct {
-	User UserOptions `toml:"UserOptions"`
+	User   UserOptions   `toml:"UserOptions"`
+	Server ServerOptions `toml:"ServerOptions"`
+}
+
+type ServerOptions struct {
+	ServerIpPort string `toml:"serverIpPort"`
 }
 
 type UserOptions struct {
@@ -35,6 +40,7 @@ type UserOptions struct {
 }
 
 var (
+	config       Config
 	characterSet CharacterSet
 	userOptions  UserOptions
 )
@@ -47,12 +53,13 @@ const (
 
 func init() {
 	initCharacterSet()
-	initUserOptions()
+	loadConfigFileAndInit()
 }
 
 func main() {
 	welcome()
 	nickname(userOptions)
+	startServer(config.Server.ServerIpPort)
 }
 
 // print welcome message
@@ -74,21 +81,16 @@ func initCharacterSet() {
 }
 
 // init userOptions
-func initUserOptions() {
-	// userOptions.WantedNumber = true
-	// userOptions.WantedUpperCase = true
-	// userOptions.WantedLowerCase = true
-	// userOptions.WantedSymbol = true
-	// userOptions.SaveNickNameToFile = false
-	var config Config
+func loadConfigFileAndInit() {
 	if _, err := toml.DecodeFile("./"+ConfigFileName, &config); err != nil {
+		fmt.Println(err)
 		panic("read config error. exit.")
 	}
 	userOptions = config.User
 }
 
 // generate nickname
-func nickname(userOptions UserOptions) {
+func nickname(userOptions UserOptions) string {
 	composeOperateCharsSet(userOptions)
 
 	timeStr := time.Now().Format("2006-01-02 15:04:05")
@@ -99,6 +101,7 @@ func nickname(userOptions UserOptions) {
 		saveContent(result)
 	}
 	fmt.Println(result)
+	return result
 }
 
 // format content
@@ -129,6 +132,7 @@ func plainRandom(userOptions UserOptions) []string {
 }
 
 // mersenne twister algorithm
+// TODO
 func mersenneTwisterRandom(userOptions UserOptions) {
 
 }

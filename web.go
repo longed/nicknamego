@@ -29,6 +29,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func generate(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	apiResponse := defaultApiResponse()
 	switch r.Method {
 	case "POST":
@@ -42,19 +43,39 @@ func generate(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 		apiResponse.Data.Nn = nickname(userOptions)
-		b, _ := json.Marshal(apiResponse)
-		fmt.Fprintf(w, string(b))
+		fmt.Fprintf(w, stringApiResponse(apiResponse))
 	default:
-		fmt.Fprintf(w, "Sorry, only POST methods are supported.")
+		fmt.Fprintf(w, stringApiResponse(errorApiResponse(*UnsupportRestMethod)))
 	}
 }
 
 func defaultApiResponse() ApiResponse {
 	var apiResponse ApiResponse
-	apiResponse.Code = 0
-	apiResponse.Message = ""
+	apiResponse.Code = Success.Code
+	apiResponse.Message = Success.Msg
+	apiResponse.Data = defaultApiData()
+	return apiResponse
+}
 
+func defaultApiData() ApiData {
 	var apiData ApiData
 	apiData.Nn = ""
+	return apiData
+}
+
+func errorApiResponse(item Item) ApiResponse {
+	var apiResponse ApiResponse
+	apiResponse.Code = item.Code
+	apiResponse.Message = item.Msg
 	return apiResponse
+}
+
+func stringApiResponse(apiResponse ApiResponse) string {
+	b, err := json.Marshal(apiResponse)
+	if err != nil {
+		// TODO log
+		return ""
+	} else {
+		return string(b)
+	}
 }

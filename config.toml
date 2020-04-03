@@ -1,3 +1,6 @@
+[ServerOptions]
+serverIpPort = "10.0.2.15:9900"
+
 [UserOptions]
 # 是否要数字
 wantNumber       = true
@@ -10,8 +13,8 @@ wantSymbol       = true
 # 是否保存到文件
 saveNickNameToFile = true
 # nickname 长度
-nickNameLen = 8
+nickNameLen = 4
 # 批量产生 nickname 数
-batchNumber = 1
+batchNumber = 30
 # 指定随机字符集
 specifiedChars = ""

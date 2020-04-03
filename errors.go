@@ -1,12 +1,14 @@
 package main
 
-type Item struct {
+type ErrItem struct {
 	Code int
 	Msg string
 }
 
 var (
-	Success = &Item{Code: 0, Msg: "success"}
+	Success = &ErrItem{Code: 0, Msg: "success"}
 
-	UnsupportRestMethod = &Item{Code: 301001, Msg: "unsupport rest method"}
+	UnsupportRestMethod = &ErrItem{Code: 301001, Msg: "unsupport rest method"}
+	ParseMultipartFormErr = &ErrItem{Code: 301002, Msg: "parse multi part form err. "}
+	UnmarshalJsonErr = &ErrItem{Code: 301003, Msg: "unmarshal json err. "}
 )

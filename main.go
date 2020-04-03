@@ -90,18 +90,21 @@ func loadConfigFileAndInit() {
 }
 
 // generate nickname
-func nickname(userOptions UserOptions) string {
+func nickname(userOptions UserOptions) ApiData {
 	composeOperateCharsSet(userOptions)
 
 	timeStr := time.Now().Format("2006-01-02 15:04:05")
-	content := []string{timeStr}
+	content := []string{}
 	content = append(content, plainRandom(userOptions)...)
 	result := format(content)
 	if userOptions.SaveNickNameToFile {
 		saveContent(result)
 	}
-	fmt.Println(result)
-	return result
+	fmt.Println(timeStr + " " + result)
+	apiData := defaultApiData()
+	apiData.Date = timeStr
+	apiData.Nn = result
+	return apiData
 }
 
 // format content

@@ -30,7 +30,7 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	apiResponse := defaultApiResponse()
 	apiResponse.Data.Nn = "hello, this is nicknamego."
-	fmt.Fprintf(w, stringApiResponse(apiResponse))
+	fmt.Fprintf(w, apiResponse.toStr())
 }
 
 func generate(w http.ResponseWriter, r *http.Request) {
@@ -39,20 +39,20 @@ func generate(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
 		if err := r.ParseMultipartForm(0); err != nil {
-			fmt.Fprintf(w, stringApiResponse(errorApiResponseWithErr(ParseMultipartFormErr, err)))
+			fmt.Fprintf(w, errorApiResponseWithErr(ParseMultipartFormErr, err).toStr())
 			return
 		}
 		uo := r.FormValue("userOptions")
 		var userOptions UserOptions
 		if err := json.Unmarshal([]byte(uo), &userOptions); err != nil {
-			fmt.Fprintf(w, stringApiResponse(errorApiResponseWithErr(UnmarshalJsonErr, err)))
+			fmt.Fprintf(w, errorApiResponseWithErr(UnmarshalJsonErr, err).toStr())
 			return
 		}
 		apiData := nickname(userOptions)
 		apiResponse.Data = apiData
-		fmt.Fprintf(w, stringApiResponse(apiResponse))
+		fmt.Fprintf(w, apiResponse.toStr())
 	default:
-		fmt.Fprintf(w, stringApiResponse(errorApiResponse(UnsupportRestMethod)))
+		fmt.Fprintf(w, errorApiResponse(UnsupportRestMethod).toStr())
 	}
 }
 
@@ -84,7 +84,7 @@ func errorApiResponseWithErr(item *ErrItem, err error) ApiResponse {
 	return apiResponse
 }
 
-func stringApiResponse(apiResponse ApiResponse) string {
+func (apiResponse ApiResponse) toStr() string {
 	b, err := json.Marshal(apiResponse)
 	if err != nil {
 		// TODO log

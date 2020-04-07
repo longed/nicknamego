@@ -53,7 +53,7 @@ const (
 
 func init() {
 	initCharacterSet()
-	loadConfigFileAndInit()
+	loadConfigAndInit()
 }
 
 func main() {
@@ -81,9 +81,18 @@ func initCharacterSet() {
 }
 
 // init userOptions
-func loadConfigFileAndInit() {
-	if _, err := toml.DecodeFile("./"+ConfigFileName, &config); err != nil {
-		fmt.Println(err)
+func loadConfigAndInit() {
+	// sort by priority, left priority < right priority
+	pathsToFind := []string{"./", "../conf/"}
+	found := false
+	for _, path := range pathsToFind {
+		if _, err := toml.DecodeFile(path+ConfigFileName, &config); err != nil {
+			fmt.Println(err)
+		} else {
+			found = true
+		}
+	}
+	if !found {
 		panic("read config error. exit.")
 	}
 	userOptions = config.User

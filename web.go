@@ -6,8 +6,12 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"sync/atomic"
 )
 
+var (
+	counter int32 = 0 // global counter
+)
 type ApiResponse struct {
 	Code    int     `json:"code"`
 	Message string  `json:"message"`
@@ -21,8 +25,7 @@ type ApiData struct {
 
 func startServer(ipPort string) {
 	http.HandleFunc("/", viewHandler)
-	http.HandleFunc("/nng/v1/generate", generate)
-
+	http.HandleFunc("/nng/v1/generate", generateHandler)
 	log.Fatal(http.ListenAndServe(ipPort, nil))
 }
 
@@ -31,10 +34,12 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	apiResponse := defaultApiResponse()
 	apiResponse.Data.Nn = "hello, this is nicknamego."
 	fmt.Fprintf(w, apiResponse.toStr())
+	fmt.Printf("counter: %d\n", get())
 }
 
-func generate(w http.ResponseWriter, r *http.Request) {
+func generateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	add()
 	apiResponse := defaultApiResponse()
 	switch r.Method {
 	case "POST":
@@ -54,6 +59,14 @@ func generate(w http.ResponseWriter, r *http.Request) {
 	default:
 		fmt.Fprintf(w, errorApiResponse(UnsupportRestMethod).toStr())
 	}
+}
+
+func add() {
+	atomic.AddInt32(&counter, 1)
+}
+
+func get() int32 {
+	return atomic.LoadInt32(&counter)
 }
 
 func defaultApiResponse() ApiResponse {

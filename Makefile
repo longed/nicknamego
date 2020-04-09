@@ -26,7 +26,7 @@ GOBUILD         := $(GO) build -o $(EXECUTABLE) .
 integrate: build
 	# create directories by script
 	bash assemly.sh mkdir_loop $(TARGET_DIR) $(TARGET_DIR)/$(BIN_DIR) $(TARGET_DIR)/$(CONF_DIR) $(TARGET_DIR)/$(DOC_DIR) $(TARGET_DIR)/$(LIB_DIR)
-	# copy files config-file scripts README.md docs/*
+	# copy files | config-file scripts README.md docs/*
 	yes | cp -t $(TARGET_DIR)/$(CONF_DIR) $(CONFIG_FILE)
 	yes | cp -t $(TARGET_DIR)/$(BIN_DIR) build/nicknamego.sh
 	yes | cp -t $(TARGET_DIR)/$(DOC_DIR) README.md
